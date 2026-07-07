@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
+import { heroSlides } from "@/data/heroSlides";
 
 export default function Hero() {
   return (
