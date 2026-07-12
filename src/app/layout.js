@@ -1,12 +1,13 @@
-import { Plus_Jakarta_Sans } from "next/font/google";
 import "./globals.css";
+import { Toaster } from "sonner";
+import { Manrope } from "next/font/google";
 
-const jakarta = Plus_Jakarta_Sans({
+const manrope = Manrope({
   subsets: ["latin"],
 });
 
 export const metadata = {
-   title: {
+  title: {
     default: "IdeaVault",
     template: "%s | IdeaVault",
   },
@@ -16,8 +17,9 @@ export const metadata = {
 export default function RootLayout({ children }) {
   return (
     <html lang="en" className="h-full antialiased">
-      <body className={`${jakarta.className} min-h-full flex flex-col`}>
+      <body className={`${manrope.className} min-h-screen flex flex-col`}>
         {children}
+        <Toaster richColors position="top-right" />
       </body>
     </html>
   );
