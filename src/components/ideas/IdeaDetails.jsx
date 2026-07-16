@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import { useParams, useRouter } from "next/navigation";
 import Image from "next/image";
-
+import { getComments } from "@/services/commentApi";
 import {
   CalendarDays,
   Tag,
@@ -21,7 +21,7 @@ export default function IdeaDetails() {
 
   const [idea, setIdea] = useState(null);
   const [loading, setLoading] = useState(true);
-
+  const [comments, setComments] = useState([]);
   useEffect(() => {
     const loadIdea = async () => {
       try {
@@ -36,7 +36,20 @@ export default function IdeaDetails() {
       loadIdea();
     }
   }, [id]);
+useEffect(() => {
+  if (!id) return;
 
+  const loadComments = async () => {
+    try {
+      const data = await getComments(id);
+      setComments(data);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  loadComments();
+}, [id]);
   if (loading) {
     return (
       <h1 className="text-2xl text-white">
@@ -288,26 +301,7 @@ return (
   >
     ← Back
   </button>
-<button
-  onClick={async () => {
-    const { data } = await authClient.token();
 
-    const result = await addComment(
-      {
-        ideaId: idea._id,
-        comment: "This is my first comment.",
-        userName: idea.authorName,
-        userEmail: idea.authorEmail,
-        userImage: idea.authorImage,
-      },
-      data.token
-    );
-
-    console.log(result);
-  }}
->
-  Test Comment
-</button>
   <button
     className="rounded-xl bg-pink-600 px-6 py-3 font-semibold text-white transition hover:scale-105"
   >
@@ -337,6 +331,64 @@ return (
   </button>
 
 </div> 
+<div className="mt-12">
+
+  <h2 className="mb-6 text-3xl font-bold text-white">
+    Comments ({comments.length})
+  </h2>
+
+  {comments.length === 0 ? (
+    <div className="rounded-2xl border border-dashed border-white/20 p-8 text-center">
+      <p className="text-slate-400">
+        No comments yet.
+      </p>
+    </div>
+  ) : (
+    <div className="space-y-5">
+
+      {comments.map((comment) => (
+
+        <div
+          key={comment._id}
+          className="rounded-2xl border border-white/10 bg-slate-800 p-5"
+        >
+
+          <div className="flex items-center gap-3">
+
+            <Image
+              src={comment.userImage}
+              alt={comment.userName}
+              width={45}
+              height={45}
+              className="rounded-full"
+            />
+
+            <div>
+
+              <h4 className="font-semibold text-white">
+                {comment.userName}
+              </h4>
+
+              <p className="text-xs text-slate-500">
+                {new Date(comment.createdAt).toLocaleString()}
+              </p>
+
+            </div>
+
+          </div>
+
+          <p className="mt-4 text-slate-300">
+            {comment.comment}
+          </p>
+
+        </div>
+
+      ))}
+
+    </div>
+  )}
+
+</div>
   </div>
 
   </div>
