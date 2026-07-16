@@ -288,7 +288,26 @@ return (
   >
     ← Back
   </button>
+<button
+  onClick={async () => {
+    const { data } = await authClient.token();
 
+    const result = await addComment(
+      {
+        ideaId: idea._id,
+        comment: "This is my first comment.",
+        userName: idea.authorName,
+        userEmail: idea.authorEmail,
+        userImage: idea.authorImage,
+      },
+      data.token
+    );
+
+    console.log(result);
+  }}
+>
+  Test Comment
+</button>
   <button
     className="rounded-xl bg-pink-600 px-6 py-3 font-semibold text-white transition hover:scale-105"
   >
