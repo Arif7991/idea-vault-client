@@ -1,10 +1,12 @@
 const API_URL = "http://localhost:5000";
-
 export const addIdea = async (ideaData) => {
-  const res = await fetch(`${API_URL}/ideas`, {
+  const token = localStorage.getItem("access-token");
+
+  const res = await fetch("http://localhost:5000/ideas", {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
+      Authorization: `Bearer ${token}`,
     },
     body: JSON.stringify(ideaData),
   });
@@ -27,8 +29,15 @@ export const getIdeas = async () => {
 };
 
 export const getMyIdeas = async (email) => {
+  const token = localStorage.getItem("access-token");
+
   const res = await fetch(
-    `http://localhost:5000/my-ideas?email=${email}`
+    `http://localhost:5000/my-ideas?email=${email}`,
+    {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    }
   );
 
   if (!res.ok) {
@@ -38,8 +47,13 @@ export const getMyIdeas = async (email) => {
   return res.json();
 };
 export const deleteIdea = async (id) => {
+  const token = localStorage.getItem("access-token");
+
   const res = await fetch(`http://localhost:5000/ideas/${id}`, {
     method: "DELETE",
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
   });
 
   if (!res.ok) {
@@ -50,9 +64,13 @@ export const deleteIdea = async (id) => {
 };
 
 export const getIdeaById = async (id) => {
-  const res = await fetch(
-    `http://localhost:5000/ideas/${id}`
-  );
+  const token = localStorage.getItem("access-token");
+
+  const res = await fetch(`http://localhost:5000/ideas/${id}`, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
 
   if (!res.ok) {
     throw new Error("Failed");
@@ -60,12 +78,14 @@ export const getIdeaById = async (id) => {
 
   return res.json();
 };
-
 export const updateIdea = async (id, data) => {
-  const res = await fetch(`${API_URL}/ideas/${id}`, {
+  const token = localStorage.getItem("access-token");
+
+  const res = await fetch(`http://localhost:5000/ideas/${id}`, {
     method: "PUT",
     headers: {
       "Content-Type": "application/json",
+      Authorization: `Bearer ${token}`,
     },
     body: JSON.stringify(data),
   });
@@ -74,9 +94,5 @@ export const updateIdea = async (id, data) => {
     throw new Error("Failed");
   }
 
-  const result = await res.json();
-
-  console.log(result);
-
-  return result;
+  return res.json();
 };

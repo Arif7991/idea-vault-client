@@ -1,8 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { useParams } from "next/navigation";
-import { useRouter } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 import Image from "next/image";
 
 import {
@@ -17,48 +16,43 @@ import {
 import { getIdeaById } from "@/services/ideaApi";
 
 export default function IdeaDetails() {
-
   const { id } = useParams();
+  const router = useRouter();
 
   const [idea, setIdea] = useState(null);
-
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-
     const loadIdea = async () => {
-
       try {
-
         const data = await getIdeaById(id);
-
         setIdea(data);
-
       } finally {
-
         setLoading(false);
-
       }
-
     };
 
-    loadIdea();
+    if (id) {
+      loadIdea();
+    }
+  }, [id]);
 
-  }, [id]);if (loading) {
-  return (
-    <h1 className="text-2xl text-white">
-      Loading...
-    </h1>
-  );
-}
-const router = useRouter();
-if (!idea) {
-  return (
-    <h1 className="text-2xl text-red-400">
-      Idea not found
-    </h1>
-  );
-}return (
+  if (loading) {
+    return (
+      <h1 className="text-2xl text-white">
+        Loading...
+      </h1>
+    );
+  }
+
+  if (!idea) {
+    return (
+      <h1 className="text-2xl text-red-400">
+        Idea not found
+      </h1>
+    );
+  }
+return (
   <div className="mx-auto max-w-6xl">
 
     {/* Hero Image */}

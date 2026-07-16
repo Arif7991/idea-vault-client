@@ -5,6 +5,7 @@ import { motion } from "framer-motion";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
+import { getJwtToken } from "@/services/authApi";
 
 import { authClient } from "@/lib/auth-client";
 import { toast } from "sonner";
@@ -25,7 +26,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 
 
-export default function AuthForm({ mode }) {
+const AuthForm = ({ mode }) => {
   const isRegister = mode === "register";
 
   const router = useRouter();
@@ -46,46 +47,59 @@ const handleGoogleLogin = async () => {
   } = useForm();
 
   const onSubmit = async (data) => {
-    setLoading(true);
+  setLoading(true);
 
-    try {
-      if (isRegister) {
-        const result = await authClient.signUp.email({
-          name: data.name,
-          email: data.email,
-          password: data.password,
-          image: data.image,
-        });
+  try {
+    if (isRegister) {
+      const result = await authClient.signUp.email({
+        name: data.name,
+        email: data.email,
+        password: data.password,
+        image: data.image,
+      });
 
-        if (result.error) {
-          toast.error(result.error.message);
-          return;
-        }
-
-        toast.success("Account created successfully 🎉");
-        reset();
-        router.push("/");
-      } else {
-        const result = await authClient.signIn.email({
-          email: data.email,
-          password: data.password,
-        });
-
-        if (result.error) {
-          toast.error(result.error.message);
-          return;
-        }
-
-        toast.success("Login successful 🎉");
-        reset();
-        router.push("/");
+      if (result.error) {
+        toast.error(result.error.message);
+        return;
       }
-    } catch (error) {
-      toast.error(error.message);
-    } finally {
-      setLoading(false);
+
+      toast.success("Account created successfully 🎉");
+      reset();
+      router.push("/login");
+
+    } else {
+
+      const result = await authClient.signIn.email({
+        email: data.email,
+        password: data.password,
+      });
+
+      if (result.error) {
+        toast.error(result.error.message);
+        return;
+      }
+      const { data: tokenData, error } = await authClient.token();
+
+console.log("JWT DATA:", tokenData);
+console.log("JWT ERROR:", error);
+      // Better Auth Session
+      const session = await authClient.getSession();
+      console.log("SESSION:", session);
+
+     
+
+      toast.success("Login successful 🎉");
+      reset();
+      router.push("/");
+
     }
-  };
+
+  } catch (error) {
+    toast.error(error.message);
+  } finally {
+    setLoading(false);
+  }
+};
 
   return (
     <section className="relative flex min-h-screen items-center justify-center overflow-hidden bg-slate-950 px-5 py-10">
@@ -359,3 +373,5 @@ const handleGoogleLogin = async () => {
     </section>
   );
 }
+
+export default AuthForm
