@@ -3,7 +3,14 @@
 import { useEffect, useState } from "react";
 import { useParams, useRouter } from "next/navigation";
 import Image from "next/image";
-import { getComments } from "@/services/commentApi";
+import {
+  getComments,
+  addComment,
+  updateComment,
+  deleteComment,
+} from "@/services/commentApi";
+import { authClient } from "@/lib/auth-client";
+import { toast } from "sonner";
 import {
   CalendarDays,
   Tag,
@@ -22,6 +29,7 @@ export default function IdeaDetails() {
   const [idea, setIdea] = useState(null);
   const [loading, setLoading] = useState(true);
   const [comments, setComments] = useState([]);
+  const [comment, setComment] = useState("");
   useEffect(() => {
     const loadIdea = async () => {
       try {
@@ -50,6 +58,39 @@ useEffect(() => {
 
   loadComments();
 }, [id]);
+
+
+
+const handleComment = async () => {
+  if (!comment.trim()) {
+    return toast.error("Comment cannot be empty");
+  }
+
+  try {
+    const session = await authClient.getSession();
+
+    const user = session.data.user;
+
+    await addComment({
+      ideaId: idea._id,
+      comment,
+      userName: user.name,
+      userEmail: user.email,
+      userImage: user.image,
+    });
+
+    const updated = await getComments(idea._id);
+    setComments(updated);
+
+    setComment("");
+
+    toast.success("Comment added successfully");
+  } catch (error) {
+    toast.error(error.message);
+  }
+};
+
+
   if (loading) {
     return (
       <h1 className="text-2xl text-white">
@@ -332,7 +373,23 @@ return (
 
 </div> 
 <div className="mt-12">
+<div className="mb-10 rounded-2xl border border-white/10 bg-slate-900 p-6">
 
+  <textarea
+    value={comment}
+    onChange={(e) => setComment(e.target.value)}
+    placeholder="Write your comment..."
+    className="h-32 w-full rounded-xl border border-white/10 bg-slate-800 p-4 text-white outline-none"
+  />
+
+  <button
+    onClick={handleComment}
+    className="mt-4 rounded-xl bg-violet-600 px-6 py-3 font-semibold text-white hover:bg-violet-700"
+  >
+    Post Comment
+  </button>
+
+</div>
   <h2 className="mb-6 text-3xl font-bold text-white">
     Comments ({comments.length})
   </h2>
