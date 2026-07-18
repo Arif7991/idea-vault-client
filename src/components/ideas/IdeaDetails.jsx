@@ -3,9 +3,18 @@
 import { useEffect, useState } from "react";
 import { useParams, useRouter } from "next/navigation";
 import Image from "next/image";
-
 import {
-  CalendarDays,
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
+import {
   Heart,
   Share2,
   Eye,
@@ -148,21 +157,17 @@ export default function IdeaDetails() {
   // Delete Comment
   // -----------------------------
   const handleDeleteComment = async (commentId) => {
-    const ok = confirm("Delete this comment?");
+  try {
+    await deleteComment(commentId);
 
-    if (!ok) return;
+    await loadComments();
 
-    try {
-      await deleteComment(commentId);
-
-      await loadComments();
-
-      toast.success("Comment deleted");
-    } catch (error) {
-      console.log(error);
-      toast.error("Failed to delete comment");
-    }
-  };
+    toast.success("Comment deleted");
+  } catch (error) {
+    console.log(error);
+    toast.error("Failed to delete comment");
+  }
+};
 
   if (loading) {
     return (
@@ -512,16 +517,40 @@ export default function IdeaDetails() {
                           Edit
                         </button>
 
-                        <button
-                          onClick={() =>
-                            handleDeleteComment(
-                              item._id
-                            )
-                          }
-                          className="rounded bg-red-600 px-4 py-2 text-white"
-                        >
-                          Delete
-                        </button>
+                        <AlertDialog>
+  <AlertDialogTrigger asChild>
+    <button className="rounded-lg bg-red-600 px-4 py-2 font-medium text-white transition hover:bg-red-700">
+      Delete
+    </button>
+  </AlertDialogTrigger>
+
+  <AlertDialogContent
+    className="border border-slate-700 bg-slate-900 text-white shadow-2xl"
+  >
+    <AlertDialogHeader>
+      <AlertDialogTitle className="text-2xl font-bold text-white">
+        Delete Comment?
+      </AlertDialogTitle>
+
+      <AlertDialogDescription className="text-base text-slate-300">
+        This action cannot be undone. Your comment will be permanently deleted.
+      </AlertDialogDescription>
+    </AlertDialogHeader>
+
+    <AlertDialogFooter>
+      <AlertDialogCancel className="border-slate-700 bg-slate-800 text-white hover:bg-slate-700 hover:text-white">
+        Cancel
+      </AlertDialogCancel>
+
+      <AlertDialogAction
+        onClick={() => handleDeleteComment(item._id)}
+        className="bg-red-600 text-white hover:bg-red-700"
+      >
+        Delete
+      </AlertDialogAction>
+    </AlertDialogFooter>
+  </AlertDialogContent>
+</AlertDialog>
 
                       </div>
 
