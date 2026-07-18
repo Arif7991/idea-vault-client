@@ -64,3 +64,22 @@ export const deleteComment = async (id) => {
 
   return res.json();
 };
+/// getMyInteractions
+export const getMyInteractions = async (email) => {
+  const token = localStorage.getItem("access-token");
+
+  const res = await fetch(
+    `${API_URL}/my-interactions?email=${email}`,
+    {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    }
+  );
+
+  if (!res.ok) {
+    throw new Error("Failed to fetch interactions");
+  }
+
+  return res.json();
+};
