@@ -1,5 +1,8 @@
 import AllIdeas from "@/components/ideas/AllIdeas";
 
+export const metadata = {
+  title: "Ideas | IdeaVault",
+};
 export default function IdeasPage() {
   return (
     <section className="min-h-screen bg-slate-950 px-6 py-14">

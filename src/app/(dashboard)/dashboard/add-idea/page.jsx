@@ -1,5 +1,7 @@
 import AddIdeaForm from "@/components/ideas/AddIdeaForm";
-
+export const metadata = {
+  title: "Add Idea | IdeaVault",
+};
 export default function AddIdeaPage() {
   return (
     <div className="mx-auto max-w-5xl">

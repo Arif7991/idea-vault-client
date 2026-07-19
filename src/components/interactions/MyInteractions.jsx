@@ -71,14 +71,91 @@ export default function MyInteractions() {
 }
 
   return (
-    <>
-      <h1 className="mb-10 text-5xl font-bold text-white">
+  <div>
+
+    {/* Heading */}
+
+    <div className="mb-12">
+
+      <h1 className="text-5xl font-bold text-white">
         My Interactions
       </h1>
 
-      <p className="text-slate-400">
+      <p className="mt-3 text-slate-400">
         Total Comments: {interactions.length}
       </p>
-    </>
-  );
+
+    </div>
+
+    {/* Cards */}
+
+    <div className="grid gap-8 md:grid-cols-2 xl:grid-cols-3">
+
+      {interactions.map((item) => (
+
+        <div
+          key={item._id}
+          className="overflow-hidden rounded-3xl border border-white/10 bg-slate-900 transition hover:-translate-y-2 hover:border-violet-500"
+        >
+
+          <Image
+            src={item.ideaImage}
+            alt={item.ideaTitle}
+            width={500}
+            height={280}
+            className="h-52 w-full object-cover"
+          />
+
+          <div className="p-6">
+
+            <span className="rounded-full bg-violet-600 px-3 py-1 text-sm text-white">
+              {item.category}
+            </span>
+
+            <h2 className="mt-5 text-2xl font-bold text-white">
+              {item.ideaTitle}
+            </h2>
+
+            <div className="mt-6">
+
+              <h4 className="mb-2 font-semibold text-violet-400">
+                💬 Your Comment
+              </h4>
+
+              <p className="line-clamp-3 text-slate-300">
+                {item.comment}
+              </p>
+
+            </div>
+
+            <div className="mt-6 flex items-center gap-2 text-sm text-slate-500">
+
+              <CalendarDays size={16} />
+
+              {new Date(
+                item.createdAt
+              ).toLocaleDateString()}
+
+            </div>
+
+            <Link
+              href={`/ideas/${item.ideaId}`}
+              className="mt-8 inline-flex items-center gap-2 rounded-xl bg-violet-600 px-5 py-3 font-semibold text-white transition hover:bg-violet-700"
+            >
+              View Details
+
+              <ArrowRight size={18} />
+
+            </Link>
+
+          </div>
+
+        </div>
+
+      ))}
+
+    </div>
+
+  </div>
+);
 }
