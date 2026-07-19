@@ -6,6 +6,7 @@ import { getMyInteractions } from "@/services/commentApi";
 import Image from "next/image";
 import Link from "next/link";
 import { MessageCircle, CalendarDays, ArrowRight } from "lucide-react";
+import LoadingSpinner from "../shared/LoadingSpinner";
 
 
 
@@ -36,12 +37,8 @@ export default function MyInteractions() {
   }, []);
 
   if (loading) {
-    return (
-      <h1 className="text-center text-2xl text-white">
-        Loading...
-      </h1>
-    );
-  }
+  return <LoadingSpinner />;
+}
   if (interactions.length === 0) {
   return (
     <div className="py-20 text-center">

@@ -32,6 +32,7 @@ import {
 
 import { authClient } from "@/lib/auth-client";
 import { toast } from "sonner";
+import LoadingSpinner from "../shared/LoadingSpinner";
 
 export default function IdeaDetails() {
   const { id } = useParams();
@@ -168,14 +169,9 @@ export default function IdeaDetails() {
     toast.error("Failed to delete comment");
   }
 };
-
-  if (loading) {
-    return (
-      <h1 className="text-center text-2xl text-white">
-        Loading...
-      </h1>
-    );
-  }
+if (loading) {
+  return <LoadingSpinner />;
+}
 
   if (!idea) {
     return (

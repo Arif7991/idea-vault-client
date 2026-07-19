@@ -10,6 +10,7 @@ import { getIdeaById, updateIdea } from "@/services/ideaApi";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
+import LoadingSpinner from "../shared/LoadingSpinner";
 
 export default function EditIdeaForm() {
   const { id } = useParams();
@@ -40,12 +41,10 @@ export default function EditIdeaForm() {
     loadIdea();
   }, [id, reset]);
    const onSubmit = async (data) => {
-  console.log("Form Data:", data);
 
   try {
     const result = await updateIdea(id, data);
 
-    console.log(result);
 
     if (result.modifiedCount > 0) {
       toast.success("Idea updated successfully");
@@ -54,18 +53,13 @@ export default function EditIdeaForm() {
       toast.info("No changes made");
     }
   } catch (err) {
-    console.log(err);
     toast.error("Update failed");
   }
 };
 
-  if (loading) {
-    return (
-      <h1 className="text-2xl text-white">
-        Loading...
-      </h1>
-    );
-  }return (
+ if (loading) {
+  return <LoadingSpinner />;
+}return (
   <div className="mx-auto max-w-3xl py-10">
     <h1 className="mb-8 text-4xl font-bold text-white">
       Edit Idea

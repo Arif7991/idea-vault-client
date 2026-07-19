@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 
 import { getIdeas } from "@/services/ideaApi";
 import PublicIdeaCard from "./PublicIdeaCard";
+import LoadingSpinner from "../shared/LoadingSpinner";
 
 export default function AllIdeas() {
   const [ideas, setIdeas] = useState([]);
@@ -56,12 +57,8 @@ export default function AllIdeas() {
     });
 
   if (loading) {
-    return (
-      <h1 className="text-center text-2xl text-white">
-        Loading...
-      </h1>
-    );
-  }
+  return <LoadingSpinner />;
+}
 
   return (
     <>

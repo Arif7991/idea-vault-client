@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import IdeaCard from "./IdeaCard";
 import { authClient } from "@/lib/auth-client";
 import { getMyIdeas } from "@/services/ideaApi";
+import LoadingSpinner from "../shared/LoadingSpinner";
 
 export default function MyIdeas() {
 
@@ -44,12 +45,8 @@ const handleDelete = (id) => {
   }, [session]);
 
   if (loading) {
-    return (
-      <h1 className="text-white text-2xl">
-        Loading...
-      </h1>
-    );
-  }
+  return <LoadingSpinner />;
+}
 
   return (
     <div>
